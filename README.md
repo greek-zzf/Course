@@ -8,6 +8,7 @@
 - Spring Boot
 - Flyway
 - JPA
+- PostgreSQL（支持无缝切换到 MySQL）
 - Docker
 - Junit 5
 
