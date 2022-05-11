@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - restore_cache:
+          key: Zhouzf-{{ checksum "pom.xml" }}
+      - run:
+          name: Run Maven verify
+          command: mvn clean test -P mavenCentral -Dmaven.test.skip=true
+      - save_cache: # saves the project dependencies
+          paths: [~/.m2]
+          key: Zhouzf-{{ checksum "pom.xml" }}
+workflows:
+  version: 2
+  default:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - main
