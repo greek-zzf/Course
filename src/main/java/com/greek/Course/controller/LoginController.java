@@ -1,6 +1,7 @@
 package com.greek.Course.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.greek.Course.model.Status;
 import com.greek.Course.model.SysUser;
 import com.greek.Course.service.SysUserService;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.swing.text.html.StyleSheet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,12 +29,6 @@ public class LoginController {
         this.sysUserService = sysUserService;
     }
 
-    private static Map<String, String> usernameToPassword = new HashMap<>();
-
-    static {
-        usernameToPassword.put("admin", "123");
-    }
-
     @PostMapping("/login")
     @ResponseBody
     public String login(@RequestParam UsernameAndPassword usernameAndPassword) {
@@ -42,6 +38,18 @@ public class LoginController {
 
         user.filter(e -> checkPassword(usernameAndPassword.getPassword(), e.getEncryptedPassword()));
         return user.isPresent() ? "SUCCEED" : "FAIL";
+    }
+
+    @PostMapping("/register")
+    @ResponseBody
+    public String register(@RequestParam UsernameAndPassword usernameAndPassword) {
+        // TODO 对用户名和密码进行参数校验
+        SysUser registerUser = new SysUser();
+        registerUser.setUsername("test");
+
+        sysUserService.addSysUser(registerUser);
+
+        return "SUCCEED";
     }
 
     // TODO 对密码进行加密处理
