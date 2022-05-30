@@ -5,7 +5,7 @@
 <module name="Checker">
     <property name="localeLanguage" value="en"/>
     <module name="NewlineAtEndOfFile">
-        <property name="lineSeparator" value="lf"/>
+        <property name="lineSeparator" value="CRLF"/>
     </module>
     <module name="FileTabCharacter">
         <property name="fileExtensions" value="java,xml"/>
