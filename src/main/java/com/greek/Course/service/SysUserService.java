@@ -31,8 +31,6 @@ public class SysUserService {
         sysUser.setCreatedAt(LocalDateTime.now());
         sysUser.setStatus(Status.OK);
         return sysUserRepository.save(sysUser);
-
-
     }
 
 

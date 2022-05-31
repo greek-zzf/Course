@@ -1,18 +1,13 @@
 package com.greek.Course.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.greek.Course.model.Status;
 import com.greek.Course.model.SysUser;
 import com.greek.Course.service.SysUserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.swing.text.html.StyleSheet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
