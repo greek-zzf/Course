@@ -20,16 +20,23 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public void addRole(Role role) {
+    public Role addRole(Role role) {
         role.setCreatedAt(LocalDateTime.now());
-        roleRepository.save(role);
+        return roleRepository.save(role);
     }
 
     public void deleteRole(int roleId) {
         roleRepository.deleteById(roleId);
     }
 
-    public void updateRole(Role role){
+    public Role updateRole(RoleVo role) {
+        Role roleToUpdate = roleRepository.getById(role.getId());
+        roleToUpdate.setName(role.getName());
+        roleToUpdate.setStatus(role.getStatus());
+        roleToUpdate.setUpdatedAt(LocalDateTime.now());
+        return roleRepository.save(roleToUpdate);
+    }
 
+    public void getRolePage(RoleVo roleVo) {
     }
 }
