@@ -11,7 +11,7 @@
 - PostgreSQL（支持无缝切换到 MySQL）
 - Docker
 - Junit 5
-
+- Casbin
 ## 技术点
 
 - 支付宝沙箱在线支付
