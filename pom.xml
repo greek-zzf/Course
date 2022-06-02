@@ -47,6 +47,13 @@
             <version>5.8.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.casbin/jcasbin -->
+        <dependency>
+            <groupId>org.casbin</groupId>
+            <artifactId>jcasbin</artifactId>
+            <version>1.23.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
