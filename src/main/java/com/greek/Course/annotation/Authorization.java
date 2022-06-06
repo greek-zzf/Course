@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * @author Zhaofeng Zhou
  * @since 2022/6/1
- *
+ * <p>
  * 表示指定的方法需要进行权限校验
  */
 
@@ -13,3 +13,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authorization {
 }
+
