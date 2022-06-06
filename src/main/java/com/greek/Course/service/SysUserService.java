@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * @author Zhaofeng Zhou
@@ -23,8 +22,8 @@ public class SysUserService {
         this.sysUserRepository = sysUserRepository;
     }
 
-    public Optional<SysUser> getUserByUsername(String username) {
-        return Optional.ofNullable(sysUserRepository.findByUsername(username));
+    public SysUser getUserByUsername(String username) {
+        return sysUserRepository.findByUsername(username);
     }
 
     public SysUser addSysUser(SysUser sysUser) {
