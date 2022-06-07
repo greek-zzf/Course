@@ -1,14 +1,16 @@
 package com.greek.Course.interceptor;
 
+import com.greek.Course.dao.SessionDao;
 import com.greek.Course.dao.SysUserRepository;
 import com.greek.Course.global.UserContext;
+import com.greek.Course.model.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -19,32 +21,37 @@ import java.util.stream.Stream;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
-    private static final String LOGIN_COOKE_NAME = "JESSIONID";
+    public static final String LOGIN_COOKE_NAME = "JESSIONID";
 
     @Autowired
-    private SysUserRepository sysUserRepository;
+    SessionDao sessionDao;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Cookie[] cookies = request.getCookies();
-
-        Stream.of(cookies)
-                .filter(cookie -> cookie.getName().equals(LOGIN_COOKE_NAME))
-                .findFirst()
-                .map(Cookie::getValue)
-                .flatMap(sysUserRepository::findByCookie)
-                .ifPresent(UserContext::setUser);
+        getCookie(request)
+                .flatMap(sessionDao::findByCookie)
+                .map(Session::getUser)
+                .ifPresent(UserContext::setCurrentUser);
 
         return true;
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
-    }
-
-    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         UserContext.clearUser();
+    }
+
+
+    public static Optional<String> getCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return Optional.empty();
+        }
+        Cookie[] cookies = request.getCookies();
+
+        return Stream.of(cookies)
+                .filter(cookie -> cookie.getName().equals(LOGIN_COOKE_NAME))
+                .map(Cookie::getValue)
+                .findFirst();
     }
 }

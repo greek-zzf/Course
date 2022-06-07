@@ -14,6 +14,7 @@ public class Result<T> {
 
     protected Result(T data, String msg) {
         this.data = data;
+        this.msg = msg;
     }
 
     public static <T> Result of(T data, String msg) {

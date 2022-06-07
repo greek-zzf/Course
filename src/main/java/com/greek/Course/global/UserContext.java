@@ -10,11 +10,11 @@ public class UserContext {
 
     private static ThreadLocal<SysUser> userThreadLocal = new ThreadLocal<>();
 
-    public static SysUser getUser() {
+    public static SysUser getCurrentUser() {
         return userThreadLocal.get();
     }
 
-    public static void setUser(SysUser user) {
+    public static void setCurrentUser(SysUser user) {
         userThreadLocal.set(user);
     }
 
