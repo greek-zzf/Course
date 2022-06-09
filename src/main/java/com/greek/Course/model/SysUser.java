@@ -1,9 +1,8 @@
 package com.greek.Course.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Zhaofeng Zhou
@@ -17,6 +16,9 @@ public class SysUser {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Status status;
+
+    private List<Role> roles;
+
 
     @Id
     @Column(name = "id")
@@ -71,5 +73,19 @@ public class SysUser {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
