@@ -1,10 +1,15 @@
 package com.greek.Course.aspect;
 
+import com.greek.Course.exception.HttpException;
+import com.greek.Course.global.UserContext;
+import com.greek.Course.model.RoleEnum;
+import com.greek.Course.model.SysUser;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
+
+import java.util.Objects;
 
 /**
  * @author Zhaofeng Zhou
@@ -16,15 +21,25 @@ import org.springframework.core.annotation.Order;
 @Order(1)
 public class AuthorizationAop {
 
-    @Pointcut("@annotation(com.greek.Course.annotation.Authorization)")
-    public void controller() {
-    }
 
-    @Around(value = "controller()")
+    @Around("@annotation(com.greek.Course.annotation.Admin)")
     public Object authorization(ProceedingJoinPoint proceed) throws Throwable {
-        // 获取当前用户信息，以及对应的权限
+        SysUser currentUser = UserContext.getCurrentUser();
+        if (Objects.isNull(currentUser)) {
+            throw HttpException.unauthorized("用户没有登录！");
+        }
+
+        if (!isAdmin(currentUser)) {
+            throw HttpException.forbidden("用户没有权限！");
+        }
 
         return proceed.proceed();
+    }
+
+    private boolean isAdmin(SysUser currentUser) {
+        return currentUser.getRoles()
+                .stream()
+                .anyMatch(role -> RoleEnum.ADMIN.name().equalsIgnoreCase(role.getName()));
     }
 
 

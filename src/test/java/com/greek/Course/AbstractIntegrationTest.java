@@ -46,7 +46,7 @@ public class AbstractIntegrationTest {
 
     HttpClient client = HttpClient.newHttpClient();
 
-    private static final String DOMAIN = "http://127.0.0.1/";
+    private static final String DOMAIN = "http://localhost:";
 
     @BeforeEach
     void initDatabase() {
@@ -64,7 +64,7 @@ public class AbstractIntegrationTest {
 
     public HttpResponse<String> get(String path) throws IOException, InterruptedException {
         var request = HttpRequest.newBuilder()
-                .uri(URI.create(DOMAIN + getPort() + path))
+                .uri(URI.create(DOMAIN + getPort() + "/api/v1" + path))
                 .header("Accept", APPLICATION_JSON_VALUE)
                 .header("Content-Type", APPLICATION_FORM_URLENCODED_VALUE)
                 .GET()
@@ -75,7 +75,7 @@ public class AbstractIntegrationTest {
 
     public HttpResponse<String> post(String path, String body) throws IOException, InterruptedException {
         var request = HttpRequest.newBuilder()
-                .uri(URI.create(DOMAIN + getPort() + path))
+                .uri(URI.create(DOMAIN + getPort() + "/api/v1" + path))
                 .header("Accept", APPLICATION_JSON_VALUE)
                 .header("Content-Type", APPLICATION_FORM_URLENCODED_VALUE)
                 .POST(HttpRequest.BodyPublishers.ofString(body))

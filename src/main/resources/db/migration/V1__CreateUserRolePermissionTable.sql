@@ -1,7 +1,7 @@
 CREATE TABLE sys_user (
                        id serial PRIMARY KEY,
                        username VARCHAR ( 50 ) UNIQUE NOT NULL,
-                       encrypted_password VARCHAR ( 50 ) NOT NULL,
+                       encrypted_password VARCHAR ( 100 ) NOT NULL,
                        created_at TIMESTAMP NOT NULL DEFAULT now(),
                        updated_at TIMESTAMP NOT NULL DEFAULT now(),
                        status VARCHAR(10) NOT NULL DEFAULT 'OK'
@@ -11,7 +11,7 @@ INSERT INTO sys_user(id, username, encrypted_password)values(1, 'Student1', '');
 INSERT INTO sys_user(id, username, encrypted_password)values(2, 'Teacher2', '');
 INSERT INTO sys_user(id, username, encrypted_password)values(3, 'Admin3', '');
 
-alter sequence users_id_seq restart with 4;
+alter sequence sys_user_id_seq restart with 4;
 
 
 CREATE TABLE role (
@@ -22,9 +22,9 @@ CREATE TABLE role (
                       status VARCHAR(10) NOT NULL DEFAULT 'OK'
 );
 
-INSERT INTO role(id, name)values(1, '学生');
-INSERT INTO role(id,name)values(2, '老师');
-INSERT INTO role(id,name)values(3, '管理员');
+INSERT INTO role(id, name)values(1, 'student');
+INSERT INTO role(id,name)values(2, 'teacher');
+INSERT INTO role(id,name)values(3, 'admin');
 alter sequence role_id_seq restart with 4;
 
 CREATE TABLE user_role(
