@@ -1,7 +1,6 @@
 package com.greek.Course.interceptor;
 
 import com.greek.Course.dao.SessionDao;
-import com.greek.Course.dao.SysUserRepository;
 import com.greek.Course.global.UserContext;
 import com.greek.Course.model.Session;
 import org.springframework.beans.factory.annotation.Autowired;
