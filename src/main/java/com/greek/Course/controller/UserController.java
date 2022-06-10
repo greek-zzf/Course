@@ -1,6 +1,7 @@
 package com.greek.Course.controller;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.greek.Course.annotation.Admin;
 import com.greek.Course.exception.HttpException;
 import com.greek.Course.model.SysUser;
 import com.greek.Course.model.vo.SysUserVo;
@@ -44,6 +45,17 @@ public class UserController {
         SysUser savedSysUser = sysUserService.addSysUser(toSaveUser);
 
         return SysUserVo.toSysUserVo(savedSysUser);
+    }
+
+    @PatchMapping("/user/{id}")
+    @Admin
+    public SysUser updateUser(@PathVariable Integer id, @RequestBody SysUser user) {
+        return sysUserService.updateUser(id, user);
+    }
+
+    @GetMapping("/user/{id}")
+    public SysUser getUser(@PathVariable Integer id) {
+        return sysUserService.getUser(id);
     }
 
 
