@@ -4,9 +4,9 @@
         "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
 <module name="Checker">
     <property name="localeLanguage" value="en"/>
-    <module name="NewlineAtEndOfFile">
-        <property name="lineSeparator" value="lf"/>
-    </module>
+<!--    <module name="NewlineAtEndOfFile">-->
+<!--        <property name="lineSeparator" value="lf"/>-->
+<!--    </module>-->
     <module name="FileTabCharacter">
         <property name="fileExtensions" value="java,xml"/>
     </module>
@@ -20,9 +20,9 @@
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
         <module name="NeedBraces"/>
-        <module name="JavadocMethod">
-            <property name="scope" value="public"/>
-        </module>
+<!--        <module name="JavadocMethod">-->
+<!--            <property name="scope" value="public"/>-->
+<!--        </module>-->
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
         <module name="UpperEll"/>

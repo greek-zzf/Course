@@ -1,12 +1,9 @@
 package com.greek.Course.service;
 
-import antlr.StringUtils;
 import cn.hutool.core.util.StrUtil;
 import com.greek.Course.annotation.Admin;
-import com.greek.Course.dao.RoleRepository;
 import com.greek.Course.dao.SysUserRepository;
 import com.greek.Course.exception.HttpException;
-import com.greek.Course.model.PageResponse;
 import com.greek.Course.model.Role;
 import com.greek.Course.model.Status;
 import com.greek.Course.model.SysUser;
@@ -21,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
