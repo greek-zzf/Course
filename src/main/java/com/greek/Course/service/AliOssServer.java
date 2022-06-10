@@ -79,6 +79,7 @@ public class AliOssServer {
                 .expire(expireTimeMillis / 1000)
                 .build();
     }
+
     /**
      * 获取public key
      *
@@ -112,7 +113,7 @@ public class AliOssServer {
         } finally {
             if (in != null) {
                 try {
-                    in.close();// 最后要关闭BufferedReader
+                    in.close(); // 最后要关闭BufferedReader
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -241,10 +242,11 @@ public class AliOssServer {
             throws IOException {
         String callbackFunName = request.getParameter("callback");
         response.addHeader("Content-Length", String.valueOf(results.length()));
-        if (callbackFunName == null || callbackFunName.equalsIgnoreCase(""))
+        if (callbackFunName == null || callbackFunName.equalsIgnoreCase("")) {
             response.getWriter().println(results);
-        else
+        } else {
             response.getWriter().println(callbackFunName + "( " + results + " )");
+        }
         response.setStatus(status);
         response.flushBuffer();
     }
@@ -254,10 +256,11 @@ public class AliOssServer {
      */
     private void response(HttpServletRequest request, HttpServletResponse response, String results) throws IOException {
         String callbackFunName = request.getParameter("callback");
-        if (callbackFunName == null || callbackFunName.equalsIgnoreCase(""))
+        if (callbackFunName == null || callbackFunName.equalsIgnoreCase("")) {
             response.getWriter().println(results);
-        else
+        } else {
             response.getWriter().println(callbackFunName + "( " + results + " )");
+        }
         response.setStatus(HttpServletResponse.SC_OK);
         response.flushBuffer();
     }
