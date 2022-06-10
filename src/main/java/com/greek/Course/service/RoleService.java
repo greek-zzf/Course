@@ -6,6 +6,10 @@ import com.greek.Course.model.vo.RoleVo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
+
 
 /**
  * @author Zhaofeng Zhou
@@ -38,5 +42,11 @@ public class RoleService {
     }
 
     public void getRolePage(RoleVo roleVo) {
+    }
+
+    public Map<String, Role> getAllRoleToMap() {
+        return roleRepository.findAll()
+                .stream()
+                .collect(toMap(Role::getName, x -> x));
     }
 }

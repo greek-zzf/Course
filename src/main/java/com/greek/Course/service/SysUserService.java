@@ -1,12 +1,22 @@
 package com.greek.Course.service;
 
+import com.greek.Course.annotation.Admin;
+import com.greek.Course.dao.RoleRepository;
 import com.greek.Course.dao.SysUserRepository;
+import com.greek.Course.exception.HttpException;
+import com.greek.Course.model.Role;
 import com.greek.Course.model.Status;
 import com.greek.Course.model.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Zhaofeng Zhou
@@ -16,10 +26,12 @@ import java.time.LocalDateTime;
 public class SysUserService {
 
     private SysUserRepository sysUserRepository;
+    private RoleService roleService;
 
     @Autowired
-    SysUserService(SysUserRepository sysUserRepository) {
+    SysUserService(SysUserRepository sysUserRepository, RoleService roleService) {
         this.sysUserRepository = sysUserRepository;
+        this.roleService = roleService;
     }
 
     public SysUser getUserByUsername(String username) {
@@ -33,4 +45,32 @@ public class SysUserService {
     }
 
 
+    @Admin
+    public SysUser updateUser(Integer id, SysUser user) {
+        SysUser userInDb = findById(id);
+
+        Map<String, Role> nameToRole = roleService.getAllRoleToMap();
+        List<Role> newRoles = userInDb.getRoles()
+                .stream()
+                .map(Role::getName)
+                .map(nameToRole::get)
+                .filter(Objects::nonNull)
+                .collect(toList());
+
+        userInDb.setRoles(newRoles);
+        sysUserRepository.save(userInDb);
+        return userInDb;
+    }
+
+
+    private SysUser findById(Integer id) {
+        return sysUserRepository.findById(id)
+                .orElseThrow(() -> HttpException.notFound("用户不存在！"));
+    }
+
+
+    @Admin
+    public SysUser getUser(Integer id) {
+        return findById(id);
+    }
 }

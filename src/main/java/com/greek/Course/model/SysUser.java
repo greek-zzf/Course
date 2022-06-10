@@ -1,5 +1,7 @@
 package com.greek.Course.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,9 +14,13 @@ import java.util.List;
 public class SysUser {
     private Integer id;
     private String username;
+    @JsonIgnore
     private String encryptedPassword;
+    @JsonIgnore
     private LocalDateTime createdAt;
+    @JsonIgnore
     private LocalDateTime updatedAt;
+    @JsonIgnore
     private Status status;
 
     private List<Role> roles;
