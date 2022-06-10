@@ -12,7 +12,6 @@ import com.greek.Course.model.AliOssConfig;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.sql.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Service
 public class AliOssServer {
@@ -63,67 +61,24 @@ public class AliOssServer {
     }
 
     public AliOssConfig getPolicyAndSign() {
-        return new AliOssConfig.Builder(host, accessKeyId, endpoint, secretAccessKey).build();
+
+        long expireTimeSeconds = 30;
+        long expireTimeMillis = System.currentTimeMillis() + expireTimeSeconds * 1000;
+        Date expiration = new Date(expireTimeMillis);
+        PolicyConditions policyConds = new PolicyConditions();
+        policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, 1048576000);
+        policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);
+
+        String postPolicy = client.generatePostPolicy(expiration, policyConds);
+        byte[] binaryData = postPolicy.getBytes(StandardCharsets.UTF_8);
+        String policy = BinaryUtil.toBase64String(binaryData);
+        String signature = client.calculatePostSignature(postPolicy);
+
+        return new AliOssConfig.Builder(host, accessKeyId, policy, signature)
+                .dir(dir)
+                .expire(expireTimeMillis / 1000)
+                .build();
     }
-
-    /**
-     * Get请求
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String accessId = "<yourAccessKeyId>"; // 请填写您的AccessKeyId。
-        String accessKey = "<yourAccessKeySecret>"; // 请填写您的AccessKeySecret。
-        String endpoint = "oss-cn-hangzhou.aliyuncs.com"; // 请填写您的 endpoint。
-        String bucket = "bucket-name"; // 请填写您的 bucketname 。
-        String host = "http://" + bucket + "." + endpoint; // host的格式为 bucketname.endpoint
-        // callbackUrl为 上传回调服务器的URL，请将下面的IP和Port配置为您自己的真实信息。
-        String callbackUrl = "http://88.88.88.88.:8888";
-        String dir = "user-dir-prefix/"; // 用户上传文件时指定的前缀。
-
-        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
-        try {
-            long expireTime = 30;
-            long expireEndTime = System.currentTimeMillis() + expireTime * 1000;
-            Date expiration = new Date(expireEndTime);
-            PolicyConditions policyConds = new PolicyConditions();
-            policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, 1048576000);
-            policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);
-
-            String postPolicy = client.generatePostPolicy(expiration, policyConds);
-            byte[] binaryData = postPolicy.getBytes("utf-8");
-            String encodedPolicy = BinaryUtil.toBase64String(binaryData);
-            String postSignature = client.calculatePostSignature(postPolicy);
-
-            Map<String, String> respMap = new LinkedHashMap<String, String>();
-            respMap.put("accessid", accessId);
-            respMap.put("policy", encodedPolicy);
-            respMap.put("signature", postSignature);
-            respMap.put("dir", dir);
-            respMap.put("host", host);
-            respMap.put("expire", String.valueOf(expireEndTime / 1000));
-            // respMap.put("expire", formatISO8601Date(expiration));
-
-            JSONObject jasonCallback = new JSONObject();
-            jasonCallback.put("callbackUrl", callbackUrl);
-            jasonCallback.put("callbackBody",
-                    "filename=${object}&size=${size}&mimeType=${mimeType}&height=${imageInfo.height}&width=${imageInfo.width}");
-            jasonCallback.put("callbackBodyType", "application/x-www-form-urlencoded");
-            String base64CallbackBody = BinaryUtil.toBase64String(jasonCallback.toString().getBytes());
-            respMap.put("callback", base64CallbackBody);
-
-            // JSONObject ja1 = JSONObject.fromObjecgst(respMap);
-            // // System.out.println(ja1.toString());
-            // response.setHeader("Access-Control-Allow-Origin", "*");
-            // response.setHeader("Access-Control-Allow-Methods", "GET, POST");
-            // response(request, response, ja1.toString());
-
-        } catch (Exception e) {
-            // Assert.fail(e.getMessage());
-            System.out.println(e.getMessage());
-        }
-    }
-
     /**
      * 获取public key
      *
