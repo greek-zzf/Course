@@ -3,11 +3,14 @@ package com.greek.Course.controller;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.greek.Course.annotation.Admin;
 import com.greek.Course.exception.HttpException;
+import com.greek.Course.model.PageResponse;
 import com.greek.Course.model.SysUser;
 import com.greek.Course.model.vo.SysUserVo;
 import com.greek.Course.model.vo.UsernameAndPassword;
 import com.greek.Course.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +59,23 @@ public class UserController {
     @GetMapping("/user/{id}")
     public SysUser getUser(@PathVariable Integer id) {
         return sysUserService.getUser(id);
+    }
+
+
+    @GetMapping("/user")
+    public PageResponse getAllUsers(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "orderBy", required = false) String orderBy,
+            @RequestParam(value = "orderType", required = false) String orderType) {
+
+        if (orderType != null && orderBy == null) {
+            throw HttpException.badRequest("缺少orderBy!");
+        }
+
+        Page<SysUser> response = sysUserService.getAllUsers(search, pageSize, pageNum, orderBy, orderType == null ? null : Sort.Direction.fromString(orderType));
+        return PageResponse.of(response, pageNum, pageSize);
     }
 
 

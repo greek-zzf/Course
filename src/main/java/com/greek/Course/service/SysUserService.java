@@ -1,13 +1,20 @@
 package com.greek.Course.service;
 
+import antlr.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.greek.Course.annotation.Admin;
 import com.greek.Course.dao.RoleRepository;
 import com.greek.Course.dao.SysUserRepository;
 import com.greek.Course.exception.HttpException;
+import com.greek.Course.model.PageResponse;
 import com.greek.Course.model.Role;
 import com.greek.Course.model.Status;
 import com.greek.Course.model.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -72,5 +79,16 @@ public class SysUserService {
     @Admin
     public SysUser getUser(Integer id) {
         return findById(id);
+    }
+
+    @Admin
+    public Page<SysUser> getAllUsers(String search, Integer pageSize, Integer pageNum, String orderBy, Sort.Direction sortRule) {
+        Pageable page = StrUtil.isEmpty(orderBy) ?
+                PageRequest.of(pageNum - 1, pageSize) :
+                PageRequest.of(pageNum - 1, pageSize, sortRule);
+
+        return StrUtil.isEmpty(search) ?
+                sysUserRepository.findAll(page) :
+                sysUserRepository.findBySearch(search, page);
     }
 }
