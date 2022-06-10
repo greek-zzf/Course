@@ -38,16 +38,28 @@ public class AuthIntegration extends AbstractIntegrationTest {
     @Test
     public void registerLoginLogoutTest() throws IOException, InterruptedException {
         String usernameAndPassword = "username=Admin3&password=123456";
+        // 注册用户
+        HttpResponse<String> response = post("/user", usernameAndPassword);
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        assertEquals("Admin3", objectMapper.readValue(response.body(), SysUser.class).getUsername());
 
-        // 使用账号密码登录
-        HttpResponse<String> response = post("/session", usernameAndPassword);
+        // 使用注册的账号密码登录
+        response = post("/session", usernameAndPassword);
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
         assertTrue(response.headers().firstValue("Set-Cookie").isPresent());
 
         // 获取登录状态
-        response = get("/api/v1/session");
+        response = get("/session");
         assertEquals(HttpStatus.OK.value(), response.statusCode());
         assertEquals("Admin3", objectMapper.readValue(response.body(), SysUser.class).getUsername());
+
+        // 注销用户
+        response = delete("/session");
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
+
+        // 再次获取登录状态
+        response = get("/session");
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
     }
 
     @Test

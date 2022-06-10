@@ -61,12 +61,19 @@ public class AbstractIntegrationTest {
         return environment.getProperty("local.server.port");
     }
 
+    public HttpResponse<String> delete(String path) throws IOException, InterruptedException {
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create(DOMAIN + getPort() + "/api/v1" + path))
+                .DELETE()
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
 
     public HttpResponse<String> get(String path) throws IOException, InterruptedException {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(DOMAIN + getPort() + "/api/v1" + path))
-                .header("Accept", APPLICATION_JSON_VALUE)
-                .header("Content-Type", APPLICATION_FORM_URLENCODED_VALUE)
                 .GET()
                 .build();
 
