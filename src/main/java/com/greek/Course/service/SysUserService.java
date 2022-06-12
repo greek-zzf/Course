@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,11 +37,11 @@ public class SysUserService {
     }
 
     public SysUser getUserByUsername(String username) {
-        return sysUserRepository.findByUsername(username);
+        return sysUserRepository.findSysUserByUsername(username);
     }
 
     public SysUser addSysUser(SysUser sysUser) {
-        sysUser.setCreatedAt(LocalDateTime.now());
+//        sysUser.setCreatedAt(LocalDateTime.now());
         sysUser.setStatus(Status.OK);
         return sysUserRepository.save(sysUser);
     }

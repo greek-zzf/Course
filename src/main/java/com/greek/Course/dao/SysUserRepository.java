@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
  */
 public interface SysUserRepository extends JpaRepository<SysUser, Integer> {
 
-    SysUser findByUsername(String username);
+    SysUser findSysUserByUsername(String username);
 
     @Query(value = "select u from SysUser u where u.username like %:search%")
     Page<SysUser> findBySearch(@Param("search") String search, Pageable pageable);

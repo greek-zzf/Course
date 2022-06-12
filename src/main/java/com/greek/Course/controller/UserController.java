@@ -6,7 +6,6 @@ import com.greek.Course.exception.HttpException;
 import com.greek.Course.model.PageResponse;
 import com.greek.Course.model.SysUser;
 import com.greek.Course.model.vo.SysUserVo;
-import com.greek.Course.model.vo.UsernameAndPassword;
 import com.greek.Course.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,17 +33,17 @@ public class UserController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public SysUserVo register(@RequestParam UsernameAndPassword usernameAndPassword) {
-        SysUser userInDatabase = sysUserService.getUserByUsername(usernameAndPassword.getUsername());
+    public SysUserVo register(@RequestParam("username") String username,
+                              @RequestParam("password") String password) {
+        SysUser userInDatabase = sysUserService.getUserByUsername(username);
 
         if (Objects.nonNull(userInDatabase)) {
             throw HttpException.gone("用户名已经被注册");
         }
 
         SysUser toSaveUser = new SysUser();
-        toSaveUser.setUsername(usernameAndPassword.getUsername());
-        toSaveUser.setEncryptedPassword(BCrypt.withDefaults().hashToString(12, usernameAndPassword.getPassword()
-                .toCharArray()));
+        toSaveUser.setUsername(username);
+        toSaveUser.setEncryptedPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
         SysUser savedSysUser = sysUserService.addSysUser(toSaveUser);
 
         return SysUserVo.toSysUserVo(savedSysUser);

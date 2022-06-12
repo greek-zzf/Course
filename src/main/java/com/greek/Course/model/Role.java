@@ -45,7 +45,7 @@ public class Role {
         this.status = status;
     }
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -54,7 +54,7 @@ public class Role {
         this.createdAt = createdAt;
     }
 
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }

@@ -1,6 +1,8 @@
 package com.greek.Course.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,11 +18,10 @@ public class SysUser {
     private String username;
     @JsonIgnore
     private String encryptedPassword;
-    @JsonIgnore
+
+    @CreatedDate
     private LocalDateTime createdAt;
-    @JsonIgnore
     private LocalDateTime updatedAt;
-    @JsonIgnore
     private Status status;
 
     private List<Role> roles;
@@ -28,6 +29,7 @@ public class SysUser {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -54,7 +56,7 @@ public class SysUser {
         this.encryptedPassword = encryptedPassword;
     }
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -63,7 +65,8 @@ public class SysUser {
         this.createdAt = createdAt;
     }
 
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
+    @LastModifiedDate
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -73,6 +76,7 @@ public class SysUser {
     }
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     public Status getStatus() {
         return status;
     }
