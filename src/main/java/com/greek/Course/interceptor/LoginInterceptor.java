@@ -22,9 +22,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     public static final String LOGIN_COOKE_NAME = "JESSIONID";
 
-    @Autowired
-    SessionDao sessionDao;
+    private SessionDao sessionDao;
 
+    public LoginInterceptor(SessionDao sessionDao) {
+        this.sessionDao = sessionDao;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

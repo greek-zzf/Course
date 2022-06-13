@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -95,6 +96,7 @@ public class AuthController {
      */
     @DeleteMapping("/session")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         SysUser user = UserContext.getCurrentUser();
         if (Objects.isNull(user)) {
@@ -136,14 +138,16 @@ public class AuthController {
      */
     @PostMapping("/session")
     @ResponseStatus(HttpStatus.CREATED)
-    public SysUserVo login(@RequestParam UsernameAndPassword usernameAndPassword, HttpServletResponse response) {
+    public SysUserVo login(@RequestParam("username") String username,
+                           @RequestParam("password") String password,
+                           HttpServletResponse response) {
         // TODO 对用户名和密码进行参数校验
-        SysUser userInDatabase = sysUserService.getUserByUsername(usernameAndPassword.getUsername());
+        SysUser userInDatabase = sysUserService.getUserByUsername(username);
         if (Objects.isNull(userInDatabase)) {
             throw HttpException.notFound("该用户未注册");
         }
 
-        BCrypt.Result result = BCrypt.verifyer().verify(usernameAndPassword.getPassword().toCharArray(), userInDatabase.getEncryptedPassword());
+        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), userInDatabase.getEncryptedPassword());
         if (!result.verified) {
             throw HttpException.badRequest("账号或密码错误");
         }

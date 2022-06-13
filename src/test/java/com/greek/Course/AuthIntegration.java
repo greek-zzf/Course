@@ -1,6 +1,7 @@
 package com.greek.Course;
 
 import com.greek.Course.global.Result;
+import com.greek.Course.model.Session;
 import com.greek.Course.model.SysUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -8,8 +9,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -37,24 +37,25 @@ public class AuthIntegration extends AbstractIntegrationTest {
      */
     @Test
     public void registerLoginLogoutTest() throws IOException, InterruptedException {
-        String usernameAndPassword = "username=Admin3&password=123456";
+        String usernameAndPassword = "username=Admin4&password=123456";
         // 注册用户
         HttpResponse<String> response = post("/user", usernameAndPassword);
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
-        assertEquals("Admin3", objectMapper.readValue(response.body(), SysUser.class).getUsername());
+        assertEquals("Admin4", objectMapper.readValue(response.body(), SysUser.class).getUsername());
 
         // 使用注册的账号密码登录
         response = post("/session", usernameAndPassword);
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
-        assertTrue(response.headers().firstValue("Set-Cookie").isPresent());
+        String cookie = response.headers().firstValue("Set-Cookie").get();
+        assertNotNull(cookie);
 
         // 获取登录状态
-        response = get("/session");
+        response = get("/session", cookie);
         assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Admin3", objectMapper.readValue(response.body(), SysUser.class).getUsername());
+        assertEquals("Admin4", objectMapper.readValue(response.body(), Session.class).getUser().getUsername());
 
         // 注销用户
-        response = delete("/session");
+        response = delete("/session", cookie);
         assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
 
         // 再次获取登录状态
@@ -89,7 +90,7 @@ public class AuthIntegration extends AbstractIntegrationTest {
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
 
         response = post("/user", usernameAndPassword);
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
+        assertEquals(HttpStatus.GONE.value(), response.statusCode());
     }
 
 }
