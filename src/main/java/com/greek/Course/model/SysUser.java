@@ -3,8 +3,10 @@ package com.greek.Course.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,13 +15,14 @@ import java.util.List;
  * @date 2022/5/11 17:43
  */
 @Entity
+@Table(name = "sys_user", schema = "public")
+@EntityListeners(AuditingEntityListener.class)
 public class SysUser {
     private Integer id;
     private String username;
     @JsonIgnore
     private String encryptedPassword;
 
-    @CreatedDate
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Status status;
@@ -29,7 +32,7 @@ public class SysUser {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -57,6 +60,7 @@ public class SysUser {
     }
 
     @Column(name = "created_at")
+    @CreatedDate
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
