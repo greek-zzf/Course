@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static javax.persistence.EnumType.STRING;
+
 /**
  * @author Zhaofeng Zhou
  * @date 2022/5/11 17:43
@@ -80,7 +82,6 @@ public class SysUser {
     }
 
     @Column(name = "status")
-    @Enumerated(EnumType.STRING)
     public Status getStatus() {
         return status;
     }

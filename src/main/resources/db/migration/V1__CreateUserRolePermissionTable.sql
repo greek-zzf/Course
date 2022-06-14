@@ -7,9 +7,9 @@ CREATE TABLE sys_user (
                        status VARCHAR(10) NOT NULL DEFAULT 'OK'
 );
 
-INSERT INTO sys_user(id, username, encrypted_password)values(1, 'Student1', '');
-INSERT INTO sys_user(id, username, encrypted_password)values(2, 'Teacher2', '');
-INSERT INTO sys_user(id, username, encrypted_password)values(3, 'Admin3', '');
+INSERT INTO sys_user(id, username, encrypted_password)values(1, 'Student1', '123456');
+INSERT INTO sys_user(id, username, encrypted_password)values(2, 'Teacher2', '123456');
+INSERT INTO sys_user(id, username, encrypted_password)values(3, 'Admin3', '123456');
 
 alter sequence sys_user_id_seq restart with 4;
 
