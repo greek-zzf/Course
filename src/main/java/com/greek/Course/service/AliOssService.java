@@ -31,7 +31,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.sql.Date;
 
 @Service
-public class AliOssServer {
+public class AliOssService {
 
 
     @Value("${ali.oss.access-key-id}")
@@ -60,7 +60,7 @@ public class AliOssServer {
                 .build();
     }
 
-    public AliOssConfig getPolicyAndSign() {
+    public AliOssConfig getPolicyAndSign(String videoId) {
 
         long expireTimeSeconds = 30;
         long expireTimeMillis = System.currentTimeMillis() + expireTimeSeconds * 1000;
@@ -75,7 +75,7 @@ public class AliOssServer {
         String signature = client.calculatePostSignature(postPolicy);
 
         return new AliOssConfig.Builder(host, accessKeyId, policy, signature)
-                .dir(dir)
+                .dir(dir + videoId + "/")
                 .expire(expireTimeMillis / 1000)
                 .build();
     }
