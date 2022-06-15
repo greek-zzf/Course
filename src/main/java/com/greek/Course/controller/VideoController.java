@@ -4,6 +4,7 @@ import cn.hutool.core.lang.UUID;
 import com.greek.Course.model.AliOssConfig;
 import com.greek.Course.service.AliOssService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,4 +23,5 @@ public class VideoController {
         String uuid = UUID.randomUUID().toString();
         return aliOssService.getPolicyAndSign(uuid);
     }
+
 }

@@ -1,9 +1,8 @@
 package com.greek.Course.interceptor;
 
-import com.greek.Course.dao.SessionDao;
+import com.greek.Course.dao.SessionRepository;
 import com.greek.Course.global.UserContext;
 import com.greek.Course.model.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.Cookie;
@@ -22,16 +21,16 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     public static final String LOGIN_COOKE_NAME = "JESSIONID";
 
-    private SessionDao sessionDao;
+    private SessionRepository sessionRepository;
 
-    public LoginInterceptor(SessionDao sessionDao) {
-        this.sessionDao = sessionDao;
+    public LoginInterceptor(SessionRepository sessionRepository) {
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         getCookie(request)
-                .flatMap(sessionDao::findByCookie)
+                .flatMap(sessionRepository::findByCookie)
                 .map(Session::getUser)
                 .ifPresent(UserContext::setCurrentUser);
 

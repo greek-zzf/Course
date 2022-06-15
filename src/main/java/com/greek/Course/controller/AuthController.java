@@ -1,13 +1,12 @@
 package com.greek.Course.controller;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.greek.Course.dao.SessionDao;
+import com.greek.Course.dao.SessionRepository;
 import com.greek.Course.exception.HttpException;
 import com.greek.Course.global.UserContext;
 import com.greek.Course.model.Session;
 import com.greek.Course.model.SysUser;
 import com.greek.Course.model.vo.SysUserVo;
-import com.greek.Course.model.vo.UsernameAndPassword;
 import com.greek.Course.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,12 +32,12 @@ import static com.greek.Course.interceptor.LoginInterceptor.getCookie;
 public class AuthController {
 
     private SysUserService sysUserService;
-    private SessionDao sessionDao;
+    private SessionRepository sessionRepository;
 
     @Autowired
-    AuthController(SysUserService sysUserService, SessionDao sessionDao) {
+    AuthController(SysUserService sysUserService, SessionRepository sessionRepository) {
         this.sysUserService = sysUserService;
-        this.sessionDao = sessionDao;
+        this.sessionRepository = sessionRepository;
     }
 
 
@@ -103,7 +102,7 @@ public class AuthController {
             throw HttpException.unauthorized("Unauthorized");
         }
 
-        getCookie(request).ifPresent(sessionDao::deleteByCookie);
+        getCookie(request).ifPresent(sessionRepository::deleteByCookie);
 
         Cookie cookie = new Cookie(LOGIN_COOKE_NAME, "");
         cookie.setMaxAge(0);
@@ -157,7 +156,7 @@ public class AuthController {
         Session session = new Session();
         session.setCookie(cookie);
         session.setUser(userInDatabase);
-        sessionDao.save(session);
+        sessionRepository.save(session);
 
         response.addCookie(new Cookie(LOGIN_COOKE_NAME, cookie));
         return SysUserVo.toSysUserVo(userInDatabase);
