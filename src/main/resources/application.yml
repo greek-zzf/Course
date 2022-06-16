@@ -10,7 +10,6 @@ ali:
     access-key-id: xx
     secret-access-key: xx
     endpoint: xx
+    security-token: xx
     bucket: xx
-    host: xx
-    callback-url: xx
     dir: xx

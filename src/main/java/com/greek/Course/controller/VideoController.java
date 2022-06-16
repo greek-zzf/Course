@@ -1,11 +1,10 @@
 package com.greek.Course.controller;
 
-import cn.hutool.core.lang.UUID;
 import com.greek.Course.model.AliOssConfig;
 import com.greek.Course.service.AliOssService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,13 +14,17 @@ public class VideoController {
 
     @Autowired
     private AliOssService aliOssService;
-    @Autowired
-    private
 
-    @PostMapping("/course/{id}/video")
-    AliOssConfig createCourse() {
-        String uuid = UUID.randomUUID().toString();
-        return aliOssService.getPolicyAndSign(uuid);
+
+    @GetMapping("/video/token")
+    public AliOssConfig createCourse() {
+        return aliOssService.getPolicyAndSign();
     }
+
+    @GetMapping("/video/{id}")
+    public String getVideoUrl(@PathVariable("id") Integer videoId) {
+        return aliOssService.getVideoUrl(videoId);
+    }
+
 
 }

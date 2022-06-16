@@ -7,6 +7,7 @@ import com.greek.Course.exception.HttpException;
 import com.greek.Course.model.Course;
 import com.greek.Course.model.Status;
 import com.greek.Course.model.SysUser;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -64,5 +66,9 @@ public class CourseService {
         return StrUtil.isEmpty(search) ?
                 courseRepository.findAll(page) :
                 courseRepository.findBySearch(search, page);
+    }
+
+    public List<Course> getCourseList() {
+        return courseRepository.findAll();
     }
 }
