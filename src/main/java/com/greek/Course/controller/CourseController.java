@@ -3,11 +3,12 @@ package com.greek.Course.controller;
 import com.greek.Course.exception.HttpException;
 import com.greek.Course.model.Course;
 import com.greek.Course.model.PageResponse;
-import com.greek.Course.model.SysUser;
 import com.greek.Course.service.CourseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Zhaofeng Zhou
@@ -43,12 +44,12 @@ public class CourseController {
         return courseService.findById(id);
     }
 
-    @GetMapping("/course")
-    public Course getCourseList(@PathVariable Integer id) {
-        return courseService.findById(id);
+    @GetMapping("/course/list")
+    public List<Course> getCourseList() {
+        return courseService.getCourseList();
     }
 
-    @GetMapping("/course")
+    @GetMapping("/course/page")
     public PageResponse getAllCourse(
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,

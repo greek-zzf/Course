@@ -11,6 +11,4 @@ ali:
     secret-access-key: xx
     endpoint: xx
     bucket: xx
-    host: xx
-    callback-url: xx
     dir: xx

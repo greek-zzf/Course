@@ -1,5 +1,6 @@
 package com.greek.Course.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.auth.Credentials;
@@ -42,10 +43,6 @@ public class AliOssService {
     private String endpoint;
     @Value("${ali.oss.bucket}")
     private String bucket;
-    @Value("${ali.oss.host}")
-    private String host;
-    @Value("${ali.oss.callback-url}")
-    private String callbackUrl;
     @Value("${ali.oss.dir}")
     private String dir;
 
@@ -62,7 +59,7 @@ public class AliOssService {
 
     public AliOssConfig getPolicyAndSign(String videoId) {
 
-        long expireTimeSeconds = 30;
+        long expireTimeSeconds = 300;
         long expireTimeMillis = System.currentTimeMillis() + expireTimeSeconds * 1000;
         Date expiration = new Date(expireTimeMillis);
         PolicyConditions policyConds = new PolicyConditions();
@@ -74,10 +71,16 @@ public class AliOssService {
         String policy = BinaryUtil.toBase64String(binaryData);
         String signature = client.calculatePostSignature(postPolicy);
 
-        return new AliOssConfig.Builder(host, accessKeyId, policy, signature)
-                .dir(dir + videoId + "/")
-                .expire(expireTimeMillis / 1000)
-                .build();
+        String host = StrUtil.format("https://{}.{}", bucket, endpoint);
+
+        AliOssConfig result = new AliOssConfig();
+        result.setPolicy(policy);
+        result.setSignature(signature);
+        result.setExpire(expireTimeMillis / 1000);
+        result.setDir(dir + "-" + videoId + "/");
+        result.setAccessid(accessKeyId);
+        result.setHost(host);
+        return result;
     }
 
     /**
