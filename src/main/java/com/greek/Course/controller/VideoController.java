@@ -17,7 +17,7 @@ public class VideoController {
 
 
     @GetMapping("/video/token")
-    public AliOssConfig createCourse() {
+    public AliOssConfig getVideoUploadToken() {
         return aliOssService.getPolicyAndSign();
     }
 
