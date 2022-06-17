@@ -21,6 +21,7 @@ CREATE TABLE video
 (
     id          serial PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
+    url         VARCHAR(100) NOT NULL,
     description TEXT,
     course_id   INT,
     created_at  TIMESTAMP    NOT NULL DEFAULT now(),
@@ -28,10 +29,10 @@ CREATE TABLE video
     status      VARCHAR(10)  NOT NULL DEFAULT 'OK'
 );
 
-INSERT INTO video(name, description, course_id)
-VALUES ('21天精通C++ - 1', '21天精通C++ 第一集', 1),
-       ('21天精通C++ - 2', '21天精通C++ 第二集', 1),
-       ('21天精通C++ - 3', '21天精通C++ 第三集', 1);
+INSERT INTO video(name, url, description, course_id)
+VALUES ('21天精通C++ - 1', '', '21天精通C++ 第一集', 1),
+       ('21天精通C++ - 2', '', '21天精通C++ 第二集', 1),
+       ('21天精通C++ - 3', '', '21天精通C++ 第三集', 1);
 
 alter
     sequence video_id_seq restart with 4;

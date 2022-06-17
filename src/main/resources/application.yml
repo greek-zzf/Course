@@ -7,9 +7,8 @@ spring:
 
 ali:
   oss:
-    access-key-id: xx
-    secret-access-key: xx
-    endpoint: xx
-    security-token: xx
-    bucket: xx
-    dir: xx
+    access-key-id: LTAI5t8wK7CC7mzRVx5qZaWb
+    secret-access-key: vjnYrX564nKkm04mUWa6kdDnpQY26a
+    endpoint: oss-cn-shenzhen.aliyuncs.com
+    bucket: wszzf
+    dir: course

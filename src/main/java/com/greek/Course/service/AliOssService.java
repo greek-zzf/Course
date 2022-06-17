@@ -1,13 +1,23 @@
 package com.greek.Course.service;
 
 import cn.hutool.core.util.StrUtil;
-import com.aliyun.oss.*;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.auth.sts.AssumeRoleRequest;
+import com.aliyuncs.auth.sts.AssumeRoleResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 import com.greek.Course.dao.VideoRepository;
 import com.greek.Course.exception.HttpException;
 import com.greek.Course.model.AliOssConfig;
@@ -20,6 +30,7 @@ import javax.annotation.PostConstruct;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 public class AliOssService {
@@ -35,8 +46,6 @@ public class AliOssService {
     private String endpoint;
     @Value("${ali.oss.bucket}")
     private String bucket;
-    @Value("${ali.oss.security-token}")
-    private String securityToken;
     @Value("${ali.oss.dir}")
     private String dir;
 
@@ -80,17 +89,17 @@ public class AliOssService {
     public String getVideoUrl(Integer id) {
         Video video = videoRepository.findById(id).orElseThrow(() -> HttpException.notFound("该视频不存在"));
 
-        String objectName = StrUtil.format("{}/{}", dir, video.getUrl());
-
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey, securityToken);
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey, "");
 
         try {
             // 设置签名URL过期时间，单位为毫秒，过期时间为 1 小时。
             Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
+
+            String objectName = StrUtil.format("{}/{}", dir, video.getUrl());
             URL url = ossClient.generatePresignedUrl(bucket, objectName, expiration);
             return url.toString();
-        } catch (OSSException | ClientException oe) {
+        } catch (OSSException e) {
             return null;
         } finally {
             if (ossClient != null) {
