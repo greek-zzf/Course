@@ -90,10 +90,12 @@ public class AliOssService {
         Video video = videoRepository.findById(id).orElseThrow(() -> HttpException.notFound("该视频不存在"));
 
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey, "");
+
         try {
             // 设置签名URL过期时间，单位为毫秒，过期时间为 1 小时。
             Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
+
             String objectName = StrUtil.format("{}/{}", dir, video.getUrl());
             URL url = ossClient.generatePresignedUrl(bucket, objectName, expiration);
             return url.toString();
